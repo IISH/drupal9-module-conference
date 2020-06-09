@@ -1,0 +1,76 @@
+<?php
+
+use Drupal\iish_conference\Markup\ConferenceHTML;
+use Drupal\iish_conference\ConferenceMisc;
+
+use Drupal\iish_conference\API\SettingsApi;
+use Drupal\iish_conference\API\LoggedInUserDetails;
+use Drupal\iish_conference\API\CachedConferenceApi;
+
+use Drupal\iish_conference\API\Domain\SessionApi;
+use Drupal\iish_conference\API\Domain\FeeStateApi;
+use Drupal\iish_conference\API\Domain\CombinedSessionParticipantApi;
+
+/**
+ * Implements hook_theme()
+ */
+function iish_conference_finalregistration_theme() {
+  return array(
+    'iish_conference_finalregistration_main' => array(
+      'render element' => 'form'
+    ),
+    'iish_conference_finalregistration_overview' => array(
+      'render element' => 'form'
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess()
+ */
+function iish_conference_finalregistration_preprocess(array &$variables, $hook) {
+  if ($hook === 'iish_conference_finalregistration_main') {
+    $variables['user'] = LoggedInUserDetails::getUser();
+
+    if (SettingsApi::getSetting(SettingsApi::SHOW_DAYS_SESSION_PLANNED, 'bool')) {
+      $sessions = CombinedSessionParticipantApi::getAllSessions(LoggedInUserDetails::getUser()
+	      ->getCombinedSessionParticipantInfo());
+//	    ->getSessionParticipantInfo());
+      $variables['sessionDays'] = SessionApi::getAllPlannedDaysForSessions($sessions);
+    }
+
+    if (!SettingsApi::getSetting(SettingsApi::SHOW_DAYS, 'bool')) {
+      $days = CachedConferenceApi::getDays();
+      $feeAmounts = LoggedInUserDetails::getParticipant()
+        ->getFeeAmounts(count($days));
+      $feeAmount = isset($feeAmounts[0]) ? $feeAmounts[0] : NULL;
+      $variables['feeAmountDescription'] = $feeAmount->getDescriptionWithoutDays();
+    }
+
+    $variables['infoBlock'] = new ConferenceHTML(ConferenceMisc::getInfoBlockFinalRegistration(), TRUE);
+  }
+
+  if ($hook === 'iish_conference_finalregistration_overview') {
+    $user = LoggedInUserDetails::getUser();
+    $participant = LoggedInUserDetails::getParticipant();
+
+    $variables['feeAmountDescription'] = $participant->getFeeAmount()->getDescriptionWithoutDays();
+    $variables['extras'] = $participant->getExtrasOfFinalRegistration();
+    //$variables['totalAmount'] = $participant->getTotalAmount();
+    $variables['totalAmount'] = ConferenceMisc::getReadableAmount( $participant->getTotalAmount(), FALSE);
+    $variables['totalAmountPayOnSite'] = $participant->getTotalAmountPaymentOnSite();
+
+    if (SettingsApi::getSetting(SettingsApi::SHOW_ACCOMPANYING_PERSONS)) {
+      $feeAmountAccompanyingPerson = $participant->getFeeAmount(NULL, FeeStateApi::getAccompanyingPersonFee());
+      $variables['accompanyingPersons'] = $participant->getAccompanyingPersons();
+      $variables['feeAmountAccompanyingPersonDescription'] = $feeAmountAccompanyingPerson->getDescriptionWithoutDays();
+    }
+
+    $variables['days'] = $user->getDaysPresent();
+    $variables['invitationLetter'] = $participant->getInvitationLetter();
+    $variables['address'] = $user->getAddress();
+    $variables['bankTransferOpen'] = SettingsApi::getSetting(SettingsApi::BANK_TRANSFER_LASTDATE, 'lastdate');
+    $variables['paymentOnSiteOpen'] = SettingsApi::getSetting(SettingsApi::PAYMENT_ON_SITE_STARTDATE, 'startdate');
+    $variables['infoBlock'] = new ConferenceHTML(ConferenceMisc::getInfoBlockFinalRegistration(), TRUE);
+  }
+}

@@ -1,0 +1,141 @@
+/* IISH CONFERENCE THEMES */
+
+.iishconference_navigation {
+    margin-bottom: 10px;
+}
+
+.iishconference_container.styled, .iishconference_form fieldset.form-wrapper {
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.iishconference_container_header, .iishconference_form fieldset.form-wrapper > legend {
+    font-weight: bold;
+    font-size: 120%;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.iishconference_form fieldset.form-wrapper > legend {
+    margin-bottom: 0;
+}
+
+.iishconference_form fieldset.form-wrapper select {
+    max-width: 600px;
+}
+
+.iishconference_container_label {
+    font-weight: bold;
+}
+
+span.iishconference-userblock {
+    float: right;
+    margin: 20px 0;
+}
+
+/* MARGINS */
+
+.rightmargin {
+    margin-right: 10px;
+}
+
+.bottommargin {
+    margin-bottom: 20px;
+}
+
+.topmargin {
+    margin-top: 20px;
+}
+
+.largertopmargin {
+    margin-top: 27px;
+}
+
+/* OTHER CSS */
+
+.iishconference_form .form-type-textfield label, .iishconference_form .form-type-select label,
+.iishconference_form .form-type-password label, .iishconference_inline, .form-item-session-inline {
+    display: inline-block;
+}
+
+.iishconference_new_line {
+    display: block;
+}
+
+.iishconference_inline_no_block {
+    display: inline;
+}
+
+.extra_info {
+    font-style: italic;
+}
+
+.eca_remark {
+}
+
+.eca_warning {
+    color: #E61A3C;
+	font-weight: bold;
+}
+
+.eca_warning a, .eca_warning a:link, .eca_warning a:hover, .eca_warning a:visited {
+    text-decoration: none;
+    border-bottom: 1px dotted #E61A3C;
+}
+
+.heavy {
+    font-weight: bold;
+}
+
+.highlight {
+    color: green;
+    font-weight: bold;
+}
+
+.clear {
+    clear: both;
+}
+
+.more-text {
+    display: none;
+}
+
+.less, .more {
+    font-style: italic;
+}
+
+.score-radios .form-radios .form-item {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+textarea.readonly-text, select.readonly-text, input.readonly-text {
+    border: 0;
+    background-color: transparent;
+}
+
+table.noborder {
+    width: 100%;
+}
+
+td.noborder {
+    border: 0;
+}
+
+@media print {
+    .noprint {
+        display: none !important;
+    }
+}
+
+/* ON SPECIFIC FIELDS */
+
+.form-item-sessiontype, .form-item-sessiondifferenttype {
+    display: inline;
+}
+
+.form-item-review .form-textarea-wrapper textarea {
+    width: 100%;
+}

@@ -1,0 +1,9 @@
+name: Change user
+type: module
+package: IISH Conference
+description: 'Allows the crew to change the looged in user account.'
+#core: 8.x
+core_version_requirement: ^9
+version: 9.x-1.0.0
+dependencies:
+  - iish_conference:iish_conference

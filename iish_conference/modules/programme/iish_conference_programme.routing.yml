@@ -1,0 +1,46 @@
+iish_conference_programme.index:
+  path: '/conference/programme'
+  defaults:
+    _controller: '\Drupal\iish_conference_programme\Controller\ProgrammeController::programme'
+    _title_callback: '\Drupal\iish_conference_programme\Controller\ProgrammeController::getProgrammeTitle'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+iish_conference_programme.year:
+  path: '/conference/programme/{year}'
+  defaults:
+    _controller: '\Drupal\iish_conference_programme\Controller\ProgrammeController::programme'
+    _title_callback: '\Drupal\iish_conference_programme\Controller\ProgrammeController::getProgrammeTitle'
+  options:
+    parameters:
+      year:
+        type: 'iish_conference_param_converter'
+    no_cache: 'TRUE'
+  requirements:
+    _access: 'TRUE'
+
+iish_conference_programme.add_session:
+  path: '/conference/programme/add-session/{session}'
+  defaults:
+    _controller: '\Drupal\iish_conference_programme\Controller\ProgrammeController::addSession'
+  options:
+    parameters:
+      session:
+        type: 'iish_conference_param_converter'
+    no_cache: 'TRUE'
+  requirements:
+    _access: 'TRUE'
+
+iish_conference_programme.remove_session:
+  path: '/conference/programme/remove-session/{session}'
+  defaults:
+    _controller: '\Drupal\iish_conference_programme\Controller\ProgrammeController::removeSession'
+  options:
+    parameters:
+      session:
+        type: 'iish_conference_param_converter'
+    no_cache: 'TRUE'
+  requirements:
+    _access: 'TRUE'
