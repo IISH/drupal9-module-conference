@@ -61,7 +61,7 @@ class ElectionAdvisoryForm extends FormBase {
       return $form;
     }
 
-    $nrChoices = intval(SettingsApi::getSetting(SettingsApi::NUM_CANDIDATE_VOTES_ADVISORY_BOARD));
+    $nrChoices = (int)SettingsApi::getSetting(SettingsApi::NUM_CANDIDATE_VOTES_ADVISORY_BOARD);
     $candidates = ElectionsAdvisoryBoardApi::getListWithCriteria(array())->getResults();
     $candidatesKeyValue = CRUDApiClient::getAsKeyValueArray($candidates);
 
@@ -92,7 +92,7 @@ class ElectionAdvisoryForm extends FormBase {
    *   The current state of the form.
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $nrChoices = intval(SettingsApi::getSetting(SettingsApi::NUM_CANDIDATE_VOTES_ADVISORY_BOARD));
+    $nrChoices = (int)SettingsApi::getSetting(SettingsApi::NUM_CANDIDATE_VOTES_ADVISORY_BOARD);
 
     $count = 0;
     foreach ($form_state->getValue('candidates') as $candidateId => $candidateValue) {

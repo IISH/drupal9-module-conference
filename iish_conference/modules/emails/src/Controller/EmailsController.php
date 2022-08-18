@@ -32,7 +32,7 @@ class EmailsController extends ControllerBase {
   public function listEmails() {
     if ($this->redirectIfNotLoggedIn()) return array();
 
-    $maxTries = intval(SettingsApi::getSetting(SettingsApi::EMAIL_MAX_NUM_TRIES));
+    $maxTries = (int)SettingsApi::getSetting(SettingsApi::EMAIL_MAX_NUM_TRIES);
 
     $props = new ApiCriteriaBuilder();
     $emailsNotSent = SentEmailApi::getListWithCriteria(

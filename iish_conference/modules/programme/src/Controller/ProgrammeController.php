@@ -56,7 +56,15 @@ class ProgrammeController extends ControllerBase {
     // If the programme of the last event date is still under construction AND there is an under construction message, show message
     $underConstruction = SettingsApi::getSetting(SettingsApi::ONLINE_PROGRAM_UNDER_CONSTRUCTION);
     if ($eventDate->isLastDate() && ($underConstruction != '')) {
-      $messenger->addMessage($underConstruction, 'warning');
+//      $messenger->addMessage($underConstruction, 'warning');
+	    foreach( explode("\n", $underConstruction) as $underConstructionItem) {
+		    $warningType = 'warning';
+		    if ( stripos( $underConstructionItem, 'under construction' ) !== false ) {
+			    $warningType = 'error';
+		    }
+//		    drupal_set_message($underConstructionItem, $warningType);
+		    $messenger->addMessage($underConstructionItem, $warningType);
+	    }
     }
 
     // Make sure the settings are already cached, before changing the year code

@@ -222,7 +222,7 @@ class ConferenceMisc {
       }
 
 //        $line .= $item;
-        $line .= $item->toString();
+        $line .= $item->__toString();
     }
 
     return $line;

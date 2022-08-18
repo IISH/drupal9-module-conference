@@ -203,15 +203,16 @@ class PaperPage extends PreRegistrationPage {
     }
 
     if ((SettingsApi::getSetting(SettingsApi::SHOW_AWARD, 'bool')) && $participant->getStudent()) {
-      $awardLink = Link::fromTextAndUrl(iish_t('more about the award'),
-        Url::fromUri('award', array('attributes' => array('target' => '_blank'))));
+      # 'award' mag niet, moet volledige url zijn, of beginnen met internal: ???
+      #$awardLink = Link::fromTextAndUrl(iish_t('more about the award'), Url::fromUri('award', array('attributes' => array('target' => '_blank'))));
+        # er is een SettingsApi::AWARD_URI maar die wordt nog niet gebruikt
 
       $form['paper']['award'] = array(
         '#type' => 'checkbox',
         '#title' => iish_t('Would you like to participate in the "@awardName"?',
-            array('@awardName' => SettingsApi::getSetting(SettingsApi::AWARD_NAME))) .
-          '&nbsp; <em>(' . $awardLink->toString() . ')</em>',
-        '#default_value' => $participant->getAward(),
+              array('@awardName' => SettingsApi::getSetting(SettingsApi::AWARD_NAME)))
+//            . '&nbsp; <em>(' . $awardLink->toString() . ')</em>'
+          , '#default_value' => $participant->getAward(),
       );
     }
 
@@ -222,14 +223,14 @@ class PaperPage extends PreRegistrationPage {
     $numKeywordsFreeMap = SettingsApi::getSetting(SettingsApi::NUM_PAPER_KEYWORDS_FREE, 'map');
 
     foreach (KeywordApi::getGroups() as $group) {
-      if (intval($numKeywordsFromListMap[$group]) > 0 || intval($numKeywordsFreeMap[$group]) > 0) {
+      if ( (int)$numKeywordsFromListMap[$group]> 0 || (int)$numKeywordsFreeMap[$group] > 0) {
         $form['keywords_' . $group] = [
           '#type' => 'fieldset',
           '#title' => iish_t(ConferenceMisc::replaceKeyword('Keywords', $group)),
         ];
 
-        $numKeywordsFromList = intval($numKeywordsFromListMap[$group]);
-        $numKeywordsFree = intval($numKeywordsFreeMap[$group]);
+        $numKeywordsFromList = (int)$numKeywordsFromListMap[$group];
+        $numKeywordsFree = (int)$numKeywordsFreeMap[$group];
 
         $allKeywords = PaperKeywordApi::getKeywordsForPaperInGroup($paper, $group);
         $allPredefinedKeywords = array();
@@ -243,7 +244,8 @@ class PaperPage extends PreRegistrationPage {
           CRUDApiClient::getForMethod($allPredefinedKeywords, 'getKeyword');
         $keywordsFromList = [];
         $keywordsFree = [];
-        foreach ($allKeywords->getResults() as $keyword) {
+        #foreach ($allKeywords->getResults() as $keyword) {
+        foreach ($allKeywords as $keyword) {
           if (array_search($keyword->getKeyword(), $allPredefinedKeywordsPlain) !== FALSE) {
             $keywordsFromList[] = $keyword->getKeyword();
           }
@@ -433,8 +435,13 @@ class PaperPage extends PreRegistrationPage {
 
     $numKeywordsFromListMap = SettingsApi::getSetting(SettingsApi::NUM_PAPER_KEYWORDS_FROM_LIST, 'map');
     foreach (KeywordApi::getGroups() as $group) {
-      $maxKeywords = intval($numKeywordsFromListMap[$group]);
-      if (($maxKeywords > 0) && (sizeof($form_state->getValue('list_' . $group)) > $maxKeywords)) {
+        $maxKeywords = (int)$numKeywordsFromListMap[$group];
+
+//error_log( "IS ARRAY: " . is_array( $form_state->getValue('list_' . $group) ));
+//error_log( "SIZE: " . count($form_state->getValue('list_' . $group)) );
+
+#      if ( $maxKeywords > 0 && sizeof($form_state->getValue('list_' . $group)) > $maxKeywords ) {
+      if ( $maxKeywords > 0 && is_array( $form_state->getValue('list_' . $group) ) && count($form_state->getValue('list_' . $group)) > $maxKeywords ) {
         $form_state->setErrorByName('list_' . $group,
           iish_t(ConferenceMisc::replaceKeyword('You can only select up to @maxSize keywords from the list!', $group), [
             '@maxSize' => $maxKeywords
@@ -493,7 +500,7 @@ class PaperPage extends PreRegistrationPage {
 
     $keywords = array();
     foreach (KeywordApi::getGroups() as $group) {
-      if (intval($numKeywordsFreeMap[$group]) > 0) {
+      if ( (int)$numKeywordsFreeMap[$group] > 0) {
         foreach ($form_state->getValue('free_keyword_' . $group) as $keyword) {
           $keyword = trim($keyword);
           if (strlen($keyword) > 0) {
@@ -504,7 +511,7 @@ class PaperPage extends PreRegistrationPage {
         // Reset the number of additional keywords in form state
         $form_state->set('num_free_keywords_' . $group, NULL);
       }
-      if (intval($numKeywordsFromListMap[$group]) > 0) {
+      if ( (int)$numKeywordsFromListMap[$group] > 0) {
         foreach (CachedConferenceApi::getKeywords() as $keyword) {
           if ($keyword->getGroupName() === $group) {
             if (is_array($form_state->getValue('list_' . $group)) && array_search($keyword->getId(), $form_state->getValue('list_' . $group)) !== FALSE) {
@@ -689,7 +696,7 @@ class PaperPage extends PreRegistrationPage {
     $group = str_replace('add_keyword_', '', $form_state->getTriggeringElement()['#name']);
     $numKeywordsFreeMap = SettingsApi::getSetting(SettingsApi::NUM_PAPER_KEYWORDS_FREE, 'map');
 
-    if ($form_state->get('num_free_keywords_' . $group) < intval($numKeywordsFreeMap[$group])) {
+    if ($form_state->get('num_free_keywords_' . $group) < (int)$numKeywordsFreeMap[$group] ) {
       $form_state->set('num_free_keywords_' . $group, $form_state->get('num_free_keywords_' . $group) + 1);
       $form_state->setRebuild();
     }

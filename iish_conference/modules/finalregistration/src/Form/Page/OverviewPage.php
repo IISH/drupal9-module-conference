@@ -144,7 +144,7 @@ class OverviewPage extends FormBase {
 
     // Create the order, if successful, redirect user to payment page
     $createOrder = new PayWayMessage(array(
-      'amount' => intval($totalAmount * 100),
+      'amount' => (int)($totalAmount * 100),
       'currency' => 'EUR',
       'language' => 'en_US',
       'cn' => $user->getFullName(),

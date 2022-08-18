@@ -38,7 +38,7 @@ class EasyProtection {
     $text = self::getLeftPart($text, ' ');
     $text = substr($text, 0, $length);
 
-    return is_numeric($text) ? intval($text) : NULL;
+    return is_numeric($text) ? (int)$text : NULL;
   }
 
   /**

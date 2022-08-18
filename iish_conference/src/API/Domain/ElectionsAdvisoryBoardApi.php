@@ -14,7 +14,7 @@ class ElectionsAdvisoryBoardApi extends CRUDApiClient {
    * Add another vote to the 'noOfVotes' for this candidate
    */
   public function vote() {
-    $this->noOfVotes = intval($this->noOfVotes) + 1;
+    $this->noOfVotes = ((int)$this->noOfVotes) + 1;
     $this->toSave['noOfVotes'] = $this->noOfVotes;
   }
 
